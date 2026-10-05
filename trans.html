@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ellietans Super-App - Lomé</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        darkBg: '#0f172a',
+                        cardDark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-darkBg text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <header class="sticky top-0 z-50 glass-panel shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/30">
+                    E
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-emerald-500 bg-clip-text text-transparent">Ellietans</span>
+                    <span class="text-xs block text-slate-500 dark:text-slate-400 font-medium">Lomé Super-App</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm">
+                <a href="#ride" class="hover:text-brand-600 dark:hover:text-brand-400 transition" data-i18n="navRide">Book Ride</a>
+                <a href="#ai-chat" class="hover:text-brand-600 dark:hover:text-brand-400 transition" data-i18n="navAi">AI Assistant</a>
+                <a href="#trust" class="hover:text-brand-600 dark:hover:text-brand-400 transition" data-i18n="navTrust">Safety & Trust</a>
+                <a href="#driver" class="hover:text-brand-600 dark:hover:text-brand-400 transition" data-i18n="navDriver">Become a Driver</a>
+            </nav>
+
+            <!-- Controls (Language, Theme, User ID status) -->
+            <div class="flex items-center space-x-4">
+                <!-- Language Selector -->
+                <select id="langSelect" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                </select>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden px-4 pt-2 pb-4 border-t border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95">
+            <div class="flex flex-col space-y-3 font-medium text-sm">
+                <a href="#ride" class="mobile-link py-2 hover:text-brand-600" data-i18n="navRide">Book Ride</a>
+                <a href="#ai-chat" class="mobile-link py-2 hover:text-brand-600" data-i18n="navAi">AI Assistant</a>
+                <a href="#trust" class="mobile-link py-2 hover:text-brand-600" data-i18n="navTrust">Safety & Trust</a>
+                <a href="#driver" class="mobile-link py-2 hover:text-brand-600" data-i18n="navDriver">Become a Driver</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="relative pt-12 pb-20 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Hero Content -->
+                    <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center space-x-2 bg-brand-50 dark:bg-brand-900/40 border border-brand-200 dark:border-brand-800 rounded-full px-4 py-1.5 text-xs font-semibold text-brand-700 dark:text-brand-300">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span data-i18n="heroBadge">Lomé, Togo • Smart Urban Mobility</span>
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                            <span data-i18n="heroTitle1">Navigate Lomé with</span> <span class="bg-gradient-to-r from-brand-600 to-emerald-400 bg-clip-text text-transparent" data-i18n="heroTitle2">Intelligence & Trust</span>
+                        </h1>
+                        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto lg:mx-0" data-i18n="heroSubtitle">
+                            Book reliable rides across Lomé, chat with our advanced multimodal AI assistant for local recommendations, and join our driver community securely.
+                        </p>
+                        <div class="flex flex-wrap justify-center lg:justify-start gap-4 pt-2">
+                            <a href="#ride" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3.5 rounded-xl shadow-lg shadow-brand-500/30 transition flex items-center space-x-2">
+                                <i class="fa-solid fa-car-side"></i>
+                                <span data-i18n="btnBookNow">Book a Ride Now</span>
+                            </a>
+                            <a href="#ai-chat" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-semibold px-6 py-3.5 rounded-xl transition flex items-center space-x-2">
+                                <i class="fa-solid fa-robot text-brand-500"></i>
+                                <span data-i18n="btnAiChat">Chat with AI</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Ride Booking Widget (Interactive) -->
+                    <div id="ride" class="lg:col-span-6">
+                        <div class="glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl relative">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold flex items-center space-x-2">
+                                    <i class="fa-solid fa-route text-brand-600"></i>
+                                    <span data-i18n="bookingTitle">Quick Ride Booking</span>
+                                </h3>
+                                <span class="text-xs bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full font-bold" data-i18n="liveLome">Lomé Live</span>
+                            </div>
+
+                            <form id="bookingForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" data-i18n="pickupLabel">Pickup Location</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-brand-600">
+                                            <i class="fa-solid fa-circle-dot text-xs"></i>
+                                        </span>
+                                        <select id="pickupLocation" class="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                            <option value="Agoè Assiyéyé">Agoè Assiyéyé</option>
+                                            <option value="Adidogomé">Adidogomé</option>
+                                            <option value="Bè Kpodji">Bè Kpodji</option>
+                                            <option value="Tokoin Lomégan">Tokoin Lomégan</option>
+                                            <option value="Port de Lomé">Port Autonome de Lomé</option>
+                                            <option value="Aéroport Gnatingbé">Aéroport International Gnassingbé Eyadéma</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" data-i18n="dropoffLabel">Destination in Lomé</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-rose-500">
+                                            <i class="fa-solid fa-location-dot text-xs"></i>
+                                        </span>
+                                        <select id="dropoffLocation" class="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                            <option value="Hôtel 2 Février">Hôtel 2 Février</option>
+                                            <option value="Plage de Lomé">Plage de Lomé / Boulevard du Mono</option>
+                                            <option value="Grand Marché">Grand Marché de Lomé</option>
+                                            <option value="Université de Lomé">Université de Lomé</option>
+                                            <option value="Deck / Hedranawoé">Hedranawoé (Deck)</option>
+                                            <option value="Kegué Stade">Stade de Kegué</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Ride Type Options -->
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2" data-i18n="rideTypeLabel">Select Vehicle Category</label>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <label class="cursor-pointer border-2 border-brand-500 bg-brand-50/50 dark:bg-brand-900/20 p-3 rounded-xl flex flex-col items-center text-center transition ride-option">
+                                            <input type="radio" name="rideType" value="moto" checked class="hidden">
+                                            <i class="fa-solid fa-motorcycle text-xl text-brand-600 mb-1"></i>
+                                            <span class="font-bold text-xs" data-i18n="motoTaxi">Moto Zémidjan</span>
+                                            <span class="text-[10px] text-slate-500">500 - 1,000 CFA</span>
+                                        </label>
+                                        <label class="cursor-pointer border-2 border-slate-200 dark:border-slate-700 p-3 rounded-xl flex flex-col items-center text-center transition ride-option hover:border-slate-300">
+                                            <input type="radio" name="rideType" value="sedan" class="hidden">
+                                            <i class="fa-solid fa-car text-xl text-slate-600 dark:text-slate-300 mb-1"></i>
+                                            <span class="font-bold text-xs" data-i18n="comfortCar">Comfort Car</span>
+                                            <span class="text-[10px] text-slate-500">2,500 - 5,000 CFA</span>
+                                        </label>
+                                        <label class="cursor-pointer border-2 border-slate-200 dark:border-slate-700 p-3 rounded-xl flex flex-col items-center text-center transition ride-option hover:border-slate-300">
+                                            <input type="radio" name="rideType" value="tricycle" class="hidden">
+                                            <i class="fa-solid fa-truck-pickup text-xl text-amber-500 mb-1"></i>
+                                            <span class="font-bold text-xs" data-i18n="tricycle">Tricycle (Adjansé)</span>
+                                            <span class="text-[10px] text-slate-500">1,200 - 2,000 CFA</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="w-full bg-gradient-to-r from-brand-600 to-emerald-500 hover:from-brand-700 hover:to-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-brand-500/30 transition flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span data-i18n="confirmRideBtn">Request Ride Now</span>
+                                </button>
+                            </form>
+
+                            <!-- Live Active Bookings Feed -->
+                            <div id="bookingStatusBox" class="hidden mt-6 p-4 rounded-xl bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 text-sm">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-bold text-brand-700 dark:text-brand-300 flex items-center space-x-2">
+                                        <span class="animate-pulse w-2.5 h-2.5 rounded-full bg-brand-500 inline-block"></span>
+                                        <span data-i18n="rideActive">Ride Dispatched in Lomé!</span>
+                                    </span>
+                                    <span id="fareTag" class="font-extrabold text-brand-600"></span>
+                                </div>
+                                <p id="driverAssignedText" class="text-xs text-slate-600 dark:text-slate-400 mb-3"></p>
+                                <button id="cancelRideBtn" class="text-xs text-rose-500 hover:underline font-semibold" data-i18n="cancelRide">Cancel Booking</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-chat" class="py-16 bg-slate-100 dark:bg-slate-900/50 border-y border-slate-200 dark:border-slate-800">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400" data-i18n="aiTag">Gemini-Powered Intelligence</span>
+                    <h2 class="text-3xl font-extrabold mt-1" data-i18n="aiHeading">Ellietans AI Lomé Assistant</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 max-w-lg mx-auto" data-i18n="aiSub">
+                        Ask about Lomé hotspots, navigation routes, weather, or local Togolese cuisine. Powered by Gemini.
+                    </p>
+                </div>
+
+                <!-- Chat Box Container -->
+                <div class="glass-panel rounded-3xl shadow-xl overflow-hidden flex flex-col h-[500px]">
+                    <!-- Chat Header -->
+                    <div class="px-6 py-4 bg-white/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="botName">Ellietans AI</h4>
+                                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center space-x-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+                                    <span data-i18n="botOnline">Ready to assist</span>
+                                </span>
+                            </div>
+                        </div>
+                        <button id="clearChatBtn" class="text-xs text-slate-500 hover:text-rose-500 transition font-medium" data-i18n="clearChat">Clear History</button>
+                    </div>
+
+                    <!-- Chat Message Area -->
+                    <div id="chatMessages" class="flex-grow p-6 overflow-y-auto space-y-4 text-sm">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-7 h-7 rounded-full bg-brand-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm max-w-[80%] border border-slate-200 dark:border-slate-700">
+                                <p data-i18n="welcomeAiMsg">Akwaaba / Akwaba! Welcome to Ellietans AI. How can I help you navigate Lomé today? Ask me about traffic on Boulevard du Mono, best local restaurants, or ride estimates.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input Form -->
+                    <form id="chatForm" class="p-4 bg-white/80 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-700 flex items-center space-x-3">
+                        <input type="text" id="chatInput" placeholder="Ask about Lomé (e.g., best fufu spot, traffic to airport)..." class="flex-grow bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl font-bold transition flex items-center justify-center shadow-md shadow-brand-500/20">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="trust" class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400" data-i18n="trustTag">Uncompromising Safety</span>
+                    <h2 class="text-3xl font-extrabold mt-1" data-i18n="trustHeading">Built on Trust & Transparency</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2" data-i18n="trustSub">
+                        Explore why thousands of Lomé residents and visitors rely on Ellietans every single day.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Trust Card 1 -->
+                    <div class="glass-panel p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 flex items-center justify-center text-xl font-bold mb-6">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2" data-i18n="trustCard1Title">Verified Drivers & Riders</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="trustCard1Desc">
+                            Every Zémidjan and driver partner undergoes rigorous local background checks and identification verifications with Togolese authorities.
+                        </p>
+                    </div>
+
+                    <!-- Trust Card 2 -->
+                    <div class="glass-panel p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center text-xl font-bold mb-6">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2" data-i18n="trustCard2Title">Transparent Pricing</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="trustCard2Desc">
+                            No surprise negotiations. Fair fares calculated upfront with support for mobile money (T-Money, Flooz) and local cash payments.
+                        </p>
+                    </div>
+
+                    <!-- Trust Card 3 -->
+                    <div class="glass-panel p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 flex items-center justify-center text-xl font-bold mb-6">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2" data-i18n="trustCard3Title">24/7 Local Support</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="trustCard3Desc">
+                            Multilingual support team based right in Lomé ready to assist you in French, English, German, or Ewe at any hour of the day.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="driver" class="py-20 bg-slate-100 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="glass-panel rounded-3xl shadow-2xl p-8 sm:p-12 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-brand-600 text-9xl pointer-events-none">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+
+                    <div class="max-w-xl mb-8">
+                        <span class="text-xs font-extrabold uppercase tracking-widest text-brand-600 dark:text-brand-400" data-i18n="driverTag">Partner Portal</span>
+                        <h2 class="text-3xl font-extrabold mt-1" data-i18n="driverHeading">Become an Ellietans Driver in Lomé</h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mt-2" data-i18n="driverSub">
+                            Join Lomé’s fastest-growing mobility network. Earn flexible income with your motorcycle, car, or tricycle.
+                        </p>
+                    </div>
+
+                    <form id="driverForm" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" data-i18n="fullNameLabel">Full Name</label>
+                                <input type="text" id="driverName" required placeholder="e.g. Koffi Mensah" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" data-i18n="phoneLabel">WhatsApp / Phone Number</label>
+                                <input type="tel" id="driverPhone" required placeholder="+228 90 00 00 00" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" data-i18n="vehicleTypeLabel">Vehicle Category</label>
+                                <select id="driverVehicle" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="Moto Zémidjan">Moto Zémidjan</option>
+                                    <option value="Sedan / Car">Sedan / Car</option>
+                                    <option value="Tricycle Adjansé">Tricycle Adjansé</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1" data-i18n="neighborhoodLabel">Base Neighborhood in Lomé</label>
+                                <input type="text" id="driverHood" required placeholder="e.g. Agoè, Hedranawoé, Bè" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-500/30 transition flex items-center justify-center space-x-2 w-full sm:w-auto">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span data-i18n="submitDriverBtn">Submit Driver Application</span>
+                        </button>
+                    </form>
+
+                    <!-- Success Feedback Box -->
+                    <div id="driverSuccessBox" class="hidden mt-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-sm">
+                        <i class="fa-solid fa-circle-check mr-2"></i>
+                        <span data-i18n="driverSuccessMsg">Application received! Our Lomé onboarding manager will reach out via WhatsApp within 24 hours.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-sm shadow">
+                    E
+                </div>
+                <span class="font-extrabold text-lg">Ellietans Lomé</span>
+            </div>
+            <p class="text-xs text-slate-500 text-center" data-i18n="footerRights">
+                © 2026 Ellietans Super-App. Empowering urban mobility in Lomé, Togo. All rights reserved.
+            </p>
+            <div class="flex space-x-4 text-slate-400">
+                <a href="#" class="hover:text-brand-600 transition"><i class="fa-brands fa-facebook text-lg"></i></a>
+                <a href="#" class="hover:text-brand-600 transition"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                <a href="#" class="hover:text-brand-600 transition"><i class="fa-brands fa-twitter text-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic & Multilingual Dictionary -->
+    <script>
+        const translations = {
+            fr: {
+                navRide: "Réserver",
+                navAi: "Assistant AI",
+                navTrust: "Sécurité & Confiance",
+                navDriver: "Devenir Chauffeur",
+                heroBadge: "Lomé, Togo • Mobilité Intelligente",
+                heroTitle1: "Naviguez à Lomé avec",
+                heroTitle2: "Intelligence & Confiance",
+                heroSubtitle: "Réservez des courses sécurisées à Lomé, discutez avec notre assistant IA multimodal et rejoignez notre communauté de chauffeurs.",
+                btnBookNow: "Réserver une Course",
+                btnAiChat: "Discuter avec l'IA",
+                bookingTitle: "Réservation Rapide",
+                liveLome: "Lomé En Direct",
+                pickupLabel: "Lieu de Départ",
+                dropoffLabel: "Destination à Lomé",
+                rideTypeLabel: "Catégorie de Véhicule",
+                motoTaxi: "Moto Zémidjan",
+                comfortCar: "Voiture Confort",
+                tricycle: "Tricycle (Adjansé)",
+                confirmRideBtn: "Commander la Course",
+                rideActive: "Course attribuée à Lomé !",
+                cancelRide: "Annuler la réservation",
+                aiTag: "Intelligence Propulsée par Gemini",
+                aiHeading: "Assistant Ellietans AI - Lomé",
+                aiSub: "Posez vos questions sur Lomé, les itinéraires, la météo ou la cuisine togolaise.",
+                botName: "Ellietans AI",
+                botOnline: "Prêt à vous aider",
+                clearChat: "Effacer l'historique",
+                welcomeAiMsg: "Akwaaba ! Bienvenue sur Ellietans AI. Comment puis-je vous aider à naviguer à Lomé aujourd'hui ?",
+                trustTag: "Sécurité Absolue",
+                trustHeading: "Bâti sur la Confiance et la Transparence",
+                trustSub: "Découvrez pourquoi des milliers de résidents et visiteurs font confiance à Ellietans chaque jour.",
+                trustCard1Title: "Chauffeurs Vérifiés",
+                trustCard1Desc: "Chaque Zémidjan et partenaire subit des contrôles rigoureux d'identité et de sécurité approuvés à Lomé.",
+                trustCard2Title: "Tarifs Transparents",
+                trustCard2Desc: "Pas de négociations imprévues. Tarifs justes calculés à l'avance avec support mobile money (T-Money, Flooz) et espèces.",
+                trustCard3Title: "Support Local 24/7",
+                trustCard3Desc: "Équipe de support multilingue basée directement à Lomé prête à vous assister en français, anglais, allemand ou éwé.",
+                driverTag: "Portail Partenaire",
+                driverHeading: "Devenez Chauffeur Ellietans à Lomé",
+                driverSub: "Rejoignez le réseau de mobilité en plein essor à Lomé. Gagnez un revenu flexible avec votre moto, voiture ou tricycle.",
+                fullNameLabel: "Nom Complet",
+                phoneLabel: "Numéro WhatsApp / Téléphone",
+                vehicleTypeLabel: "Type de Véhicule",
+                neighborhoodLabel: "Quartier de Base à Lomé",
+                submitDriverBtn: "Soumettre ma Candidature",
+                driverSuccessMsg: "Candidature reçue ! Notre responsable d'onboarding à Lomé vous contactera par WhatsApp sous 24h.",
+                footerRights: "© 2026 Ellietans Super-App. Mobilité urbaine à Lomé, Togo. Tous droits réservés."
+            },
+            en: {
+                navRide: "Book Ride",
+                navAi: "AI Assistant",
+                navTrust: "Safety & Trust",
+                navDriver: "Become a Driver",
+                heroBadge: "Lomé, Togo • Smart Urban Mobility",
+                heroTitle1: "Navigate Lomé with",
+                heroTitle2: "Intelligence & Trust",
+                heroSubtitle: "Book reliable rides across Lomé, chat with our advanced AI assistant, and join our driver community securely.",
+                btnBookNow: "Book a Ride Now",
+                btnAiChat: "Chat with AI",
+                bookingTitle: "Quick Ride Booking",
+                liveLome: "Lomé Live",
+                pickupLabel: "Pickup Location",
+                dropoffLabel: "Destination in Lomé",
+                rideTypeLabel: "Select Vehicle Category",
+                motoTaxi: "Moto Zémidjan",
+                comfortCar: "Comfort Car",
+                tricycle: "Tricycle (Adjansé)",
+                confirmRideBtn: "Request Ride Now",
+                rideActive: "Ride Dispatched in Lomé!",
+                cancelRide: "Cancel Booking",
+                aiTag: "Gemini-Powered Intelligence",
+                aiHeading: "Ellietans AI Lomé Assistant",
+                aiSub: "Ask about Lomé hotspots, navigation routes, weather, or local Togolese cuisine. Powered by Gemini.",
+                botName: "Ellietans AI",
+                botOnline: "Ready to assist",
+                clearChat: "Clear History",
+                welcomeAiMsg: "Akwaaba! Welcome to Ellietans AI. How can I help you navigate Lomé today? Ask me about traffic or restaurant recommendations.",
+                trustTag: "Uncompromising Safety",
+                trustHeading: "Built on Trust & Transparency",
+                trustSub: "Explore why thousands of Lomé residents and visitors rely on Ellietans every single day.",
+                trustCard1Title: "Verified Drivers & Riders",
+                trustCard1Desc: "Every Zémidjan and driver partner undergoes rigorous local background checks and identification verifications.",
+                trustCard2Title: "Transparent Pricing",
+                trustCard2Desc: "No surprise negotiations. Fair fares calculated upfront with support for mobile money (T-Money, Flooz) and cash.",
+                trustCard3Title: "24/7 Local Support",
+                trustCard3Desc: "Multilingual support team based right in Lomé ready to assist you in French, English, German, or Ewe anytime.",
+                driverTag: "Partner Portal",
+                driverHeading: "Become an Ellietans Driver in Lomé",
+                driverSub: "Join Lomé’s fastest-growing mobility network. Earn flexible income with your motorcycle, car, or tricycle.",
+                fullNameLabel: "Full Name",
+                phoneLabel: "WhatsApp / Phone Number",
+                vehicleTypeLabel: "Vehicle Category",
+                neighborhoodLabel: "Base Neighborhood in Lomé",
+                submitDriverBtn: "Submit Driver Application",
+                driverSuccessMsg: "Application received! Our Lomé onboarding manager will reach out via WhatsApp within 24 hours.",
+                footerRights: "© 2026 Ellietans Super-App. Empowering urban mobility in Lomé, Togo. All rights reserved."
+            },
+            de: {
+                navRide: "Fahrt Buchen",
+                navAi: "KI-Assistent",
+                navTrust: "Sicherheit & Vertrauen",
+                navDriver: "Fahrer Werden",
+                heroBadge: "Lomé, Togo • Intelligente Mobilität",
+                heroTitle1: "Navigieren Sie durch Lomé mit",
+                heroTitle2: "Intelligenz & Vertrauen",
+                heroSubtitle: "Buchen Sie zuverlässige Fahrten in Lomé, chatten Sie mit unserem KI-Assistenten und werden Sie Teil unserer Fahrergemeinschaft.",
+                btnBookNow: "Jetzt Fahrt Buchen",
+                btnAiChat: "Mit KI Chatten",
+                bookingTitle: "Schnelle Fahrtbuchung",
+                liveLome: "Lomé Live",
+                pickupLabel: "Abholort",
+                dropoffLabel: "Zielort in Lomé",
+                rideTypeLabel: "Fahrzeugkategorie Wählen",
+                motoTaxi: "Motorrad Zémidjan",
+                comfortCar: "Komfortwagen",
+                tricycle: "Dreirad (Adjansé)",
+                confirmRideBtn: "Fahrt Jetzt Anfordern",
+                rideActive: "Fahrt in Lomé vermittelt!",
+                cancelRide: "Buchung abbrechen",
+                aiTag: "Gemini-gestützte Intelligenz",
+                aiHeading: "Ellietans KI Lomé Assistent",
+                aiSub: "Fragen Sie nach Hotspots in Lomé, Routen, Wetter oder lokaler togolesischer Küche.",
+                botName: "Ellietans KI",
+                botOnline: "Bereit zu helfen",
+                clearChat: "Verlauf Löschen",
+                welcomeAiMsg: "Akwaaba! Willkommen bei Ellietans KI. Wie kann ich Ihnen heute bei der Navigation in Lomé helfen?",
+                trustTag: "Unkompromittierte Sicherheit",
+                trustHeading: "Auf Vertrauen & Transparenz aufgebaut",
+                trustSub: "Erfahren Sie, warum Tausende von Bewohnern und Besuchern in Lomé täglich auf Ellietans vertrauen.",
+                trustCard1Title: "Verifizierte Fahrer",
+                trustCard1Desc: "Jeder Zémidjan und Fahrer durchläuft strenge lokale Hintergrund- und Identitätsprüfungen.",
+                trustCard2Title: "Transparente Preise",
+                trustCard2Desc: "Keine überraschenden Verhandlungen. Faire im Voraus berechnete Tarife mit Mobile Money und Barzahlung.",
+                trustCard3Title: "24/7 Lokaler Support",
+                trustCard3Desc: "Mehrsprachiges Support-Team direkt in Lomé, bereit Ihnen jederzeit auf Französisch, Englisch oder Deutsch zu helfen.",
+                driverTag: "Partnerportal",
+                driverHeading: "Werden Sie Ellietans-Fahrer in Lomé",
+                driverSub: "Werden Sie Teil von Lomés wachsendem Mobilitätsnetzwerk. Verdienen Sie flexibles Einkommen.",
+                fullNameLabel: "Vollständiger Name",
+                phoneLabel: "WhatsApp / Telefonnummer",
+                vehicleTypeLabel: "Fahrzeugkategorie",
+                neighborhoodLabel: "Heimatviertel in Lomé",
+                submitDriverBtn: "Fahrerbewerbung Absenden",
+                driverSuccessMsg: "Bewerbung erhalten! Unser Lomé-Onboarding-Manager meldet sich innerhalb von 24 Stunden über WhatsApp.",
+                footerRights: "© 2026 Ellietans Super-App. Urbane Mobilität in Lomé, Togo. Alle Rechte vorbehalten."
+            }
+        };
+
+        const themeToggle = document.getElementById('themeToggle');
+        const langSelect = document.getElementById('langSelect');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // Theme initialization
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // Language translation function
+        function setLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+            localStorage.setItem('ellietans_lang', lang);
+        }
+
+        langSelect.addEventListener('change', (e) => {
+            setLanguage(e.target.value);
+        });
+
+        const savedLang = localStorage.getItem('ellietans_lang') || 'fr';
+        langSelect.value = savedLang;
+        setLanguage(savedLang);
+
+        const bookingForm = document.getElementById('bookingForm');
+        const bookingStatusBox = document.getElementById('bookingStatusBox');
+        const fareTag = document.getElementById('fareTag');
+        const driverAssignedText = document.getElementById('driverAssignedText');
+        const cancelRideBtn = document.getElementById('cancelRideBtn');
+
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pickup = document.getElementById('pickupLocation').value;
+            const dropoff = document.getElementById('dropoffLocation').value;
+            const rideType = document.querySelector('input[name="rideType"]:checked').value;
+
+            let fare = "750 CFA";
+            let driverName = "Kodjo Agbégnénou (Moto Zémidjan - Plaque: TG-4821-Z)";
+            if (rideType === 'sedan') {
+                fare = "3,500 CFA";
+                driverName = "Ayi Wilson (Toyota Corolla - Plaque: TG-9912-E)";
+            } else if (rideType === 'tricycle') {
+                fare = "1,500 CFA";
+                driverName = "Yaovi Kpodar (Bajaj Tricycle - Plaque: TG-1102-T)";
+            }
+
+            fareTag.textContent = fare;
+            driverAssignedText.textContent = `Route: ${pickup} ➔ ${dropoff}. Driver ${driverName} is 3 minutes away from your pickup point.`;
+            bookingStatusBox.classList.remove('hidden');
+            bookingStatusBox.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        cancelRideBtn.addEventListener('click', () => {
+            bookingStatusBox.classList.add('hidden');
+        });
+
+        // Ride Type Selection UI Highlight
+        document.querySelectorAll('.ride-option').forEach(label => {
+            label.addEventListener('click', () => {
+                document.querySelectorAll('.ride-option').forEach(l => {
+                    l.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20');
+                    l.classList.add('border-slate-200', 'dark:border-slate-700');
+                });
+                label.classList.remove('border-slate-200', 'dark:border-slate-700');
+                label.classList.add('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20');
+                label.querySelector('input').checked = true;
+            });
+        });
+
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const clearChatBtn = document.getElementById('clearChatBtn');
+
+        // Load chat history from localStorage
+        let chatHistoryState = JSON.parse(localStorage.getItem('ellietans_chat')) || [];
+        
+        function renderChatHistory() {
+            // Keep welcome message, append rest
+            while(chatMessages.children.length > 1) {
+                chatMessages.removeChild(chatMessages.lastChild);
+            }
+            chatHistoryState.forEach(msg => {
+                appendMessageNode(msg.text, msg.sender);
+            });
+        }
+
+        function appendMessageNode(text, sender) {
+            const isUser = sender === 'user';
+            const div = document.createElement('div');
+            div.className = `flex items-start space-x-3 ${isUser ? 'justify-end' : ''}`;
+            
+            if (!isUser) {
+                div.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-brand-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm max-w-[80%] border border-slate-200 dark:border-slate-700">
+                        <p>${text}</p>
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="bg-brand-600 text-white p-4 rounded-2xl shadow-sm max-w-[80%]">
+                        <p>${text}</p>
+                    </div>
+                    <div class="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                `;
+            }
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        renderChatHistory();
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            appendMessageNode(text, 'user');
+            chatHistoryState.push({ text, sender: 'user' });
+            localStorage.setItem('ellietans_chat', JSON.stringify(chatHistoryState));
+            chatInput.value = '';
+
+            // Simulate AI response grounded in Lomé context
+            const loadingId = 'loading-' + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = loadingId;
+            loadingDiv.className = 'flex items-start space-x-3';
+            loadingDiv.innerHTML = `
+                <div class="w-7 h-7 rounded-full bg-brand-500 text-white flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm max-w-[80%] border border-slate-200 dark:border-slate-700">
+                    <p class="animate-pulse text-slate-400">Thinking about Lomé routes and local spots...</p>
+                </div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                // Call Gemini API using gemini-3-flash-preview
+                const systemPrompt = "You are Ellietans AI, an expert local assistant for Lomé, Togo. Answer questions about Lomé traffic, travel, neighborhoods (like Agoè, Adidogomé, Bè, Tokoin), Togolese cuisine (like Fufu, Djenkoumè), and ride booking in a friendly, helpful manner in the language the user speaks.";
+                
+                const payload = {
+                    contents: [{ parts: [{ text: text }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`;
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const aiReply = result.candidates?.[0]?.content?.parts?.[0]?.text || "Akwaba! Lomé is vibrant today. You can easily book a Zémidjan or car to navigate around Boulevard du Mono or the Grand Marché.";
+
+                document.getElementById(loadingId).remove();
+                appendMessageNode(aiReply, 'ai');
+                chatHistoryState.push({ text: aiReply, sender: 'ai' });
+                localStorage.setItem('ellietans_chat', JSON.stringify(chatHistoryState));
+            } catch (err) {
+                document.getElementById(loadingId).remove();
+                const fallbackReply = "Akwaba! I am connected to Lomé live networks. Traffic around Hedranawoé is smooth today. How else can I assist your trip?";
+                appendMessageNode(fallbackReply, 'ai');
+                chatHistoryState.push({ text: fallbackReply, sender: 'ai' });
+                localStorage.setItem('ellietans_chat', JSON.stringify(chatHistoryState));
+            }
+        });
+
+        clearChatBtn.addEventListener('click', () => {
+            chatHistoryState = [];
+            localStorage.removeItem('ellietans_chat');
+            while(chatMessages.children.length > 1) {
+                chatMessages.removeChild(chatMessages.lastChild);
+            }
+        });
+
+        const driverForm = document.getElementById('driverForm');
+        const driverSuccessBox = document.getElementById('driverSuccessBox');
+
+        driverForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('driverName').value;
+            const phone = document.getElementById('driverPhone').value;
+            const vehicle = document.getElementById('driverVehicle').value;
+            const hood = document.getElementById('driverHood').value;
+
+            // Save driver application to localStorage
+            const applications = JSON.parse(localStorage.getItem('ellietans_drivers')) || [];
+            applications.push({ name, phone, vehicle, hood, date: new Date().toISOString() });
+            localStorage.setItem('ellietans_drivers', JSON.stringify(applications));
+
+            driverSuccessBox.classList.remove('hidden');
+            driverForm.reset();
+            driverSuccessBox.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
